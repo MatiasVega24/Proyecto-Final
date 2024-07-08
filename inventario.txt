@@ -1,0 +1,4 @@
+Arroz,100,1.20
+Frijoles,50,0.80
+Aceite,30,2.50
+Azúcar,75,1.00

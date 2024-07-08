@@ -1,0 +1,7 @@
+
+--- Menú del Sistema de Inventarios ---
+1. Listar productos
+2. Ingresar producto
+3. Editar producto
+4. Eliminar producto
+5. Salir
