@@ -8,10 +8,8 @@ def mostrar_menu():
     menu += "4. Eliminar producto\n"
     menu += "5. Salir\n"
     
-    # Imprimir menú en consola
     print(menu)
     
-    # Guardar menú en archivo de texto
     with open('menu.txt', 'w') as file:
         file.write(menu)
     print("Menú guardado en 'menu.txt'.")
