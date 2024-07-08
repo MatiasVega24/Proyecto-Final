@@ -1,10 +1,20 @@
+import os
+
 def mostrar_menu():
-    print("\n--- Menú del Sistema de Inventarios ---")
-    print("1. Listar productos")
-    print("2. Ingresar producto")
-    print("3. Editar producto")
-    print("4. Eliminar producto")
-    print("5. Salir")
+    menu = "\n--- Menú del Sistema de Inventarios ---\n"
+    menu += "1. Listar productos\n"
+    menu += "2. Ingresar producto\n"
+    menu += "3. Editar producto\n"
+    menu += "4. Eliminar producto\n"
+    menu += "5. Salir\n"
+    
+    # Imprimir menú en consola
+    print(menu)
+    
+    # Guardar menú en archivo de texto
+    with open('menu.txt', 'w') as file:
+        file.write(menu)
+    print("Menú guardado en 'menu.txt'.")
 
 def listar_productos(productos):
     if not productos:
@@ -13,13 +23,13 @@ def listar_productos(productos):
         print("\n--- Listado de Productos ---")
         print(f"{'ID':<5}{'Nombre':<20}{'Cantidad':<10}{'Precio':<10}")
         for i, producto in enumerate(productos, start=1):
-            print(f"{i:<5}{producto['nombre']:<20}{producto['cantidad']:<10}{producto['precio']:<10}")
+            print(f"{i:<5}{producto[0]:<20}{producto[1]:<10}{producto[2]:<10}")
 
 def ingresar_producto(productos):
     nombre = input("Ingrese el nombre del producto: ")
-    cantidad = int(input("Ingrese la cantidad del producto: "))
-    precio = float(input("Ingrese el precio del producto: "))
-    productos.append({'nombre': nombre, 'cantidad': cantidad, 'precio': precio})
+    cantidad = input("Ingrese la cantidad del producto: ")
+    precio = input("Ingrese el precio del producto: ")
+    productos.append((nombre, cantidad, precio))
     print(f"Producto '{nombre}' ingresado con éxito.")
 
 def editar_producto(productos):
@@ -34,15 +44,15 @@ def editar_producto(productos):
         
         if opcion == '1':
             nombre = input("Ingrese el nuevo nombre del producto: ")
-            productos[id_producto - 1]['nombre'] = nombre
+            productos[id_producto - 1] = (nombre, productos[id_producto - 1][1], productos[id_producto - 1][2])
             print(f"Nombre del producto ID {id_producto} editado con éxito.")
         elif opcion == '2':
-            cantidad = int(input("Ingrese la nueva cantidad del producto: "))
-            productos[id_producto - 1]['cantidad'] = cantidad
+            cantidad = input("Ingrese la nueva cantidad del producto: ")
+            productos[id_producto - 1] = (productos[id_producto - 1][0], cantidad, productos[id_producto - 1][2])
             print(f"Cantidad del producto ID {id_producto} editada con éxito.")
         elif opcion == '3':
-            precio = float(input("Ingrese el nuevo precio del producto: "))
-            productos[id_producto - 1]['precio'] = precio
+            precio = input("Ingrese el nuevo precio del producto: ")
+            productos[id_producto - 1] = (productos[id_producto - 1][0], productos[id_producto - 1][1], precio)
             print(f"Precio del producto ID {id_producto} editado con éxito.")
         else:
             print("Opción no válida.")
@@ -58,14 +68,32 @@ def eliminar_producto(productos):
     else:
         print("ID de producto no válido.")
 
+def cargar_productos(filename):
+    productos = []
+    if os.path.exists(filename):
+        with open(filename, 'r') as file:
+            for line in file:
+                nombre, cantidad, precio = line.strip().split(',')
+                productos.append((nombre, cantidad, precio))
+    else:
+        productos = [
+            ('Arroz', '100', '1.20'),
+            ('Frijoles', '50', '0.80'),
+            ('Aceite', '30', '2.50'),
+            ('Azúcar', '75', '1.00'),
+            ('Sal', '90', '0.50')
+        ]
+    return productos
+
+def guardar_productos(filename, productos):
+    with open(filename, 'w') as file:
+        for producto in productos:
+            file.write(','.join(producto) + '\n')
+    print("Inventario guardado con éxito.")
+
 def main():
-    productos = [
-        {'nombre': 'Arroz', 'cantidad': 100, 'precio': 1.20},
-        {'nombre': 'Frijoles', 'cantidad': 50, 'precio': 0.80},
-        {'nombre': 'Aceite', 'cantidad': 30, 'precio': 2.50},
-        {'nombre': 'Azúcar', 'cantidad': 75, 'precio': 1.00},
-        {'nombre': 'Sal', 'cantidad': 90, 'precio': 0.50}
-    ]
+    filename = 'inventario.txt'
+    productos = cargar_productos(filename)
     
     while True:
         mostrar_menu()
@@ -74,11 +102,15 @@ def main():
             listar_productos(productos)
         elif opcion == '2':
             ingresar_producto(productos)
+            guardar_productos(filename, productos)
         elif opcion == '3':
             editar_producto(productos)
+            guardar_productos(filename, productos)
         elif opcion == '4':
             eliminar_producto(productos)
+            guardar_productos(filename, productos)
         elif opcion == '5':
+            guardar_productos(filename, productos)
             print("Saliendo del sistema de inventarios...")
             break
         else:
@@ -86,3 +118,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
